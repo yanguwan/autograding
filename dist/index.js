@@ -11267,6 +11267,7 @@ const output_1 = __webpack_require__(52);
 const os = __importStar(__webpack_require__(87));
 const chalk_1 = __importDefault(__webpack_require__(843));
 const color = new chalk_1.default.Instance({ level: 1 });
+const INHERITED_ENVS = ['GOPATH', 'GOROOT'];
 class TestError extends Error {
     constructor(message) {
         super(message);
@@ -11330,7 +11331,6 @@ const waitForExit = async (child, timeout) => {
         });
     });
 };
-const INHERITED_ENVS = ['GOPATH', 'GOROOT'];
 const runSetup = async (test, cwd, timeout) => {
     if (!test.setup || test.setup === '') {
         return;
@@ -11364,13 +11364,19 @@ const runSetup = async (test, cwd, timeout) => {
     await waitForExit(setup, timeout);
 };
 const runCommand = async (test, cwd, timeout) => {
+    const env = {
+        PATH: process.env['PATH'],
+        FORCE_COLOR: 'true',
+    };
+    for (const e of INHERITED_ENVS) {
+        if (process.env[e]) {
+            env[e] = process.env[e];
+        }
+    }
     const child = child_process_1.spawn(test.run, {
         cwd,
         shell: true,
-        env: {
-            PATH: process.env['PATH'],
-            FORCE_COLOR: 'true',
-        },
+        env: env,
     });
     let output = '';
     // Start with a single new line
