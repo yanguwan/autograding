@@ -11267,7 +11267,7 @@ const output_1 = __webpack_require__(52);
 const os = __importStar(__webpack_require__(87));
 const chalk_1 = __importDefault(__webpack_require__(843));
 const color = new chalk_1.default.Instance({ level: 1 });
-const INHERITED_ENVS = ['GOPATH', 'GOROOT'];
+const INHERITED_ENVS = ['GOPATH', 'GOROOT', 'HOME'];
 class TestError extends Error {
     constructor(message) {
         super(message);

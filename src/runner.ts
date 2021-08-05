@@ -10,7 +10,7 @@ const color = new chalk.Instance({level: 1})
 
 export type TestComparison = 'exact' | 'included' | 'regex'
 
-const INHERITED_ENVS: string[] = ['GOPATH', 'GOROOT']
+const INHERITED_ENVS: string[] = ['GOPATH', 'GOROOT', 'HOME']
 
 export interface Test {
   readonly name: string
