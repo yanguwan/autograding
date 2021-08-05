@@ -1,4 +1,4 @@
-name: Autograding
+name: Autograding-alpha
 description: "Autograding for GitHub Classroom"
 author: "@you06"
 inputs:
