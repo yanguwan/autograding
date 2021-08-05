@@ -11344,6 +11344,8 @@ const runSetup = async (test, cwd, timeout) => {
             env[e] = process.env[e];
         }
     }
+    process.stdout.write('process.env:' + JSON.stringify(process.env, undefined, 2));
+    process.stdout.write('env:' + JSON.stringify(env, undefined, 2));
     const setup = child_process_1.spawn(test.setup, {
         cwd,
         shell: true,

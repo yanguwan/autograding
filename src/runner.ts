@@ -113,6 +113,10 @@ const runSetup = async (test: Test, cwd: string, timeout: number): Promise<void>
       env[e] = process.env[e]
     }
   }
+  
+
+  process.stdout.write('process.env:' + JSON.stringify(process.env, undefined, 2))
+  process.stdout.write('env:' + JSON.stringify(env, undefined, 2))
 
   const setup = spawn(test.setup, {
     cwd,
