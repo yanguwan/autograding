@@ -94,18 +94,30 @@ const waitForExit = async (child: ChildProcess, timeout: number): Promise<void> 
   })
 }
 
+const INHERITED_ENVS: string[] = ['GOPATH', 'GOROOT']
+
 const runSetup = async (test: Test, cwd: string, timeout: number): Promise<void> => {
   if (!test.setup || test.setup === '') {
     return
   }
 
+  const env: {
+    [key: string]: string | undefined;
+  } = {
+    PATH: process.env['PATH'],
+    FORCE_COLOR: 'true',
+  }
+
+  for (const e of INHERITED_ENVS) {
+    if (process.env[e]) {
+      env[e] = process.env[e]
+    }
+  }
+
   const setup = spawn(test.setup, {
     cwd,
     shell: true,
-    env: {
-      PATH: process.env['PATH'],
-      FORCE_COLOR: 'true',
-    },
+    env,
   })
 
   // Start with a single new line
