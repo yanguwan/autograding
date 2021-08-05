@@ -4,6 +4,7 @@ import path from 'path'
 import {Test, runAll} from './runner'
 
 const run = async (): Promise<void> => {
+  process.stdout.write('you06\'s auto-grading fork')
   try {
     const cwd = process.env['GITHUB_WORKSPACE']
     if (!cwd) {
