@@ -152,10 +152,14 @@ const runCommand = async (test: Test, cwd: string, timeout: number): Promise<voi
       env[e] = process.env[e];
     }
   }
+
+  process.stdout.write('env: ' + JSON.stringify(env, undefined, 2))
+  process.stdout.write('process.env: ' + JSON.stringify(process.env, undefined, 2))
+
   const child = spawn(test.run, {
     cwd,
     shell: true,
-    env: env,
+    env,
   })
 
   let output = ''
