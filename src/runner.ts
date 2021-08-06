@@ -10,6 +10,8 @@ const color = new chalk.Instance({level: 1})
 
 export type TestComparison = 'exact' | 'included' | 'regex'
 
+const INHERITED_ENVS: string[] = ['GOPATH', 'GOROOT', 'HOME']
+
 export interface Test {
   readonly name: string
   readonly setup: string
@@ -46,6 +48,25 @@ export class TestOutputError extends TestError {
 
     Error.captureStackTrace(this, TestOutputError)
   }
+}
+
+const getInheritEnv = (): {
+  [key: string]: string | undefined;
+} => {
+  const env: {
+    [key: string]: string | undefined;
+  } = {
+    PATH: process.env['PATH'],
+    FORCE_COLOR: 'true',
+  }
+
+  for (const e of INHERITED_ENVS) {
+    if (process.env[e]) {
+      env[e] = process.env[e]
+    }
+  }
+
+  return env
 }
 
 const log = (text: string): void => {
@@ -94,25 +115,12 @@ const waitForExit = async (child: ChildProcess, timeout: number): Promise<void> 
   })
 }
 
-const INHERITED_ENVS: string[] = ['GOPATH', 'GOROOT']
-
 const runSetup = async (test: Test, cwd: string, timeout: number): Promise<void> => {
   if (!test.setup || test.setup === '') {
     return
   }
 
-  const env: {
-    [key: string]: string | undefined;
-  } = {
-    PATH: process.env['PATH'],
-    FORCE_COLOR: 'true',
-  }
-
-  for (const e of INHERITED_ENVS) {
-    if (process.env[e]) {
-      env[e] = process.env[e]
-    }
-  }
+  const env = getInheritEnv();
 
   const setup = spawn(test.setup, {
     cwd,
@@ -137,13 +145,12 @@ const runSetup = async (test: Test, cwd: string, timeout: number): Promise<void>
 }
 
 const runCommand = async (test: Test, cwd: string, timeout: number): Promise<void> => {
+  const env = getInheritEnv();
+
   const child = spawn(test.run, {
     cwd,
     shell: true,
-    env: {
-      PATH: process.env['PATH'],
-      FORCE_COLOR: 'true',
-    },
+    env: env,
   })
 
   let output = ''
